@@ -6,163 +6,151 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-:root {
-  --bg1: #fdfbfb;
-  --bg2: #ebedee;
-  --accent1: #c471ed;
-  --accent2: #12c2e9;
-  --accent3: #f64f59;
-  --card: rgba(255,255,255,0.75);
-  --text: #111;
+:root{
+  --bg1:#fdfbfb;
+  --bg2:#ebedee;
+  --accent1:#c471ed;
+  --accent2:#12c2e9;
+  --accent3:#f64f59;
+  --card:rgba(255,255,255,0.75);
+  --text:#111;
 }
 
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
 
-body {
-  margin: 0;
-  font-family: "Segoe UI", system-ui, sans-serif;
-  background: linear-gradient(120deg, var(--bg1), var(--bg2));
-  overflow-x: hidden;
-  color: var(--text);
+html,body{
+  margin:0;
+  padding:0;
+  font-family:"Segoe UI",system-ui,sans-serif;
+  background:linear-gradient(120deg,var(--bg1),var(--bg2));
+  color:var(--text);
 }
 
 /* ===== Background ===== */
-.bg {
-  position: fixed;
-  inset: -10%;
+.bg{
+  position:fixed;
+  inset:-15%;
   background:
-    radial-gradient(circle at 20% 20%, rgba(196,113,237,0.25), transparent 40%),
-    radial-gradient(circle at 80% 30%, rgba(18,194,233,0.25), transparent 40%),
-    radial-gradient(circle at 50% 80%, rgba(246,79,89,0.22), transparent 45%);
-  z-index: 0;
+    radial-gradient(circle at 20% 20%,rgba(196,113,237,.25),transparent 40%),
+    radial-gradient(circle at 80% 30%,rgba(18,194,233,.25),transparent 40%),
+    radial-gradient(circle at 50% 80%,rgba(246,79,89,.22),transparent 45%);
+  z-index:0;
 }
 
 /* ===== Floating Emojis ===== */
-.floating {
-  position: fixed;
-  font-size: var(--size);
-  opacity: var(--opacity);
-  pointer-events: none;
-  z-index: 2;
+.floating{
+  position:fixed;
+  font-size:var(--size);
+  opacity:var(--opacity);
+  pointer-events:none;
+  z-index:1;
 }
 
-@keyframes floatRotate {
-  from { transform: translateY(var(--startY)) rotate(0deg); }
-  to   { transform: translateY(-140px) rotate(360deg); }
+@keyframes floatRotate{
+  from{transform:translateY(var(--startY)) rotate(0deg);}
+  to{transform:translateY(-120px) rotate(360deg);}
 }
-
-@keyframes floatStraight {
-  from { transform: translateY(var(--startY)); }
-  to   { transform: translateY(-140px); }
+@keyframes floatStraight{
+  from{transform:translateY(var(--startY));}
+  to{transform:translateY(-120px);}
 }
-
-.rotate { animation: floatRotate linear infinite; }
-.no-rotate { animation: floatStraight linear infinite; }
+.rotate{animation:floatRotate linear infinite;}
+.no-rotate{animation:floatStraight linear infinite;}
 
 /* ===== Gold Dust ===== */
-.dust {
-  position: fixed;
-  width: 3px;
-  height: 3px;
-  background: radial-gradient(circle, rgba(255,215,160,0.8), transparent);
-  border-radius: 50%;
-  opacity: 0.45;
-  animation: dustFloat linear infinite;
-  pointer-events: none;
-  z-index: 1;
+.dust{
+  position:fixed;
+  width:3px;height:3px;
+  background:radial-gradient(circle,rgba(255,215,160,.8),transparent);
+  border-radius:50%;
+  opacity:.45;
+  animation:dustFloat linear infinite;
+  pointer-events:none;
+  z-index:1;
+}
+@keyframes dustFloat{
+  from{transform:translateY(0);}
+  to{transform:translateY(-120vh);}
 }
 
-@keyframes dustFloat {
-  from { transform: translateY(0); }
-  to   { transform: translateY(-120vh); }
+/* ===== Page Wrapper ===== */
+.app{
+  position:relative;
+  min-height:100dvh; /* REAL viewport */
+  padding:56px 22px 32px;
+  z-index:2;
 }
 
 /* ===== Pages ===== */
-.page {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 44px 22px 22px; /* RESTORED TOP SPACE */
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(20px);
-  transition: all 0.5s ease;
-  z-index: 3;
+.page{
+  display:none;
+  align-items:center;
+  justify-content:center;
 }
-
-.page.active {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
+.page.active{
+  display:flex;
 }
 
 /* ===== Card ===== */
-.card {
-  position: relative;
-  width: 100%;
-  max-width: 440px;
-  background: var(--card);
-  backdrop-filter: blur(16px);
-  border-radius: 26px;
-  padding: 34px 28px;
-  box-shadow: 0 40px 80px rgba(0,0,0,0.2);
-  overflow: hidden;
-  z-index: 3;
+.card{
+  width:100%;
+  max-width:440px;
+  background:var(--card);
+  backdrop-filter:blur(16px);
+  border-radius:26px;
+  padding:34px 28px;
+  box-shadow:0 40px 80px rgba(0,0,0,.2);
+  overflow:hidden;
 }
 
-.card img {
-  width: 100%;
-  border-radius: 18px;
-  margin: 20px 0;
+.card img{
+  width:100%;
+  border-radius:18px;
+  margin:20px 0;
 }
 
 /* Candle shimmer */
-.card::after {
-  content: "";
-  position: absolute;
-  inset: -25%;
-  background: radial-gradient(circle at var(--lx) var(--ly),
-    rgba(255,200,140,0.22), transparent 45%);
-  animation: flicker 4s infinite alternate;
-  pointer-events: none;
+.card::after{
+  content:"";
+  position:absolute;
+  inset:-25%;
+  background:radial-gradient(circle at var(--lx) var(--ly),
+    rgba(255,200,140,.22),transparent 45%);
+  animation:flicker 4s infinite alternate;
+  pointer-events:none;
+}
+@keyframes flicker{
+  from{opacity:.35;}
+  to{opacity:.55;}
 }
 
-@keyframes flicker {
-  from { opacity: 0.35; }
-  to   { opacity: 0.55; }
+h1{margin:0 0 14px;font-weight:600;}
+p{font-size:16px;line-height:1.8;}
+
+input{
+  width:100%;
+  padding:16px;
+  border-radius:16px;
+  border:1px solid rgba(0,0,0,.15);
+  font-size:16px;
+  margin-top:16px;
 }
 
-h1 { margin: 0 0 14px; font-weight: 600; }
-p  { font-size: 16px; line-height: 1.8; }
-
-input {
-  width: 100%;
-  padding: 16px;
-  border-radius: 16px;
-  border: 1px solid rgba(0,0,0,0.15);
-  font-size: 16px;
-  margin-top: 16px;
+button{
+  width:100%;
+  margin-top:22px;
+  padding:16px;
+  border-radius:18px;
+  border:none;
+  font-size:16px;
+  font-weight:600;
+  background:linear-gradient(135deg,var(--accent1),var(--accent2),var(--accent3));
+  color:white;
 }
-
-button {
-  width: 100%;
-  margin-top: 22px;
-  padding: 16px;
-  border-radius: 18px;
-  border: none;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  background: linear-gradient(135deg, var(--accent1), var(--accent2), var(--accent3));
-  color: white;
-}
-
-button:active { transform: scale(0.96); }
+button:active{transform:scale(.96);}
 </style>
 </head>
 
@@ -170,7 +158,9 @@ button:active { transform: scale(0.96); }
 
 <div class="bg"></div>
 
-<!-- PAGES (unchanged content) -->
+<div class="app">
+
+<!-- PAGE 1 -->
 <div class="page active" id="p1">
   <div class="card">
     <h1>Private</h1>
@@ -180,6 +170,7 @@ button:active { transform: scale(0.96); }
   </div>
 </div>
 
+<!-- PAGE 2 -->
 <div class="page" id="p2">
   <div class="card">
     <h1 id="t1"></h1>
@@ -189,6 +180,7 @@ button:active { transform: scale(0.96); }
   </div>
 </div>
 
+<!-- PAGE 3 -->
 <div class="page" id="p3">
   <div class="card">
     <p>
@@ -198,11 +190,12 @@ button:active { transform: scale(0.96); }
       Hope this year brings you growth, confidence, and moments you’ll be proud of.
     </p>
     <img src="cat2.jpg">
-    <p style="opacity:0.7;margin-top:18px;">— always in your corner</p>
+    <p style="opacity:.7;margin-top:18px;">— always in your corner</p>
     <button onclick="nextPage(4)">Continue</button>
   </div>
 </div>
 
+<!-- PAGE 4 -->
 <div class="page" id="p4">
   <div class="card">
     <h1>Approved by a group of highly qualified cats 🐱</h1>
@@ -212,83 +205,76 @@ button:active { transform: scale(0.96); }
       you deserve a very happy birthday.
     </p>
     <img src="cat3.jpg">
-    <p style="opacity:0.6;margin-top:18px;">— 🐾🐾🐾</p>
+    <p style="opacity:.6;margin-top:18px;">— 🐾🐾🐾</p>
   </div>
 </div>
 
-<script>
-const correctPassword = "15jan2010";
+</div>
 
-function unlock() {
-  if (password.value === correctPassword) {
+<script>
+const correctPassword="15jan2010";
+
+function unlock(){
+  if(password.value===correctPassword){
     nextPage(2);
     startTyping();
   }
 }
-
-function nextPage(n) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+function nextPage(n){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById("p"+n).classList.add("active");
 }
 
 /* Typewriter */
-function typeText(el, text, speed, cb) {
-  let i = 0;
-  el.textContent = "";
-  const int = setInterval(() => {
-    if (i < text.length) el.textContent += text[i++];
-    else { clearInterval(int); cb && cb(); }
-  }, speed);
+function typeText(el,text,speed,cb){
+  let i=0;el.textContent="";
+  const int=setInterval(()=>{
+    if(i<text.length)el.textContent+=text[i++];
+    else{clearInterval(int);cb&&cb();}
+  },speed);
 }
-
-function startTyping() {
-  typeText(t1, "Happy Birthdayyy 🎉✨", 40, () => {
-    typeText(
-      t2,
+function startTyping(){
+  typeText(t1,"Happy Birthdayyy 🎉✨",40,()=>{
+    typeText(t2,
       "Wishing you a very happy birthday. May your day be filled with warmth, smiles, and good moments, and may the year ahead bring you happiness, success, and peace.",
       28
     );
   });
 }
 
-/* Floating emojis — scattered lanes */
-const symbols = ["🌸","🦋","🎈","🕯","🎂"];
-const lanes = [10, 25, 40, 55, 70, 85]; // vertical distribution
-
-for (let i = 0; i < 12; i++) {
-  const e = document.createElement("div");
-  const s = symbols[Math.floor(Math.random() * symbols.length)];
-  const lane = lanes[i % lanes.length];
-
-  e.className = "floating " + ((s==="🕯"||s==="🎂")?"no-rotate":"rotate");
-  e.textContent = s;
-
-  e.style.cssText = `
-    left:${lane + Math.random() * 6}vw;
-    --startY:${20 + Math.random() * 60}vh;
-    --size:${16 + Math.random() * 16}px;
-    --opacity:${0.35 + Math.random() * 0.35};
-    animation-duration:${18 + Math.random() * 16}s;
-    animation-delay:${Math.random() * 6}s;
+/* Emojis – scattered */
+const symbols=["🌸","🦋","🎈","🕯","🎂"];
+for(let i=0;i<12;i++){
+  const e=document.createElement("div");
+  const s=symbols[Math.floor(Math.random()*symbols.length)];
+  e.className="floating "+((s==="🕯"||s==="🎂")?"no-rotate":"rotate");
+  e.textContent=s;
+  e.style.cssText=`
+    left:${Math.random()*100}vw;
+    --startY:${20+Math.random()*60}vh;
+    --size:${16+Math.random()*16}px;
+    --opacity:${.35+Math.random()*.35};
+    animation-duration:${18+Math.random()*16}s;
+    animation-delay:${Math.random()*6}s;
   `;
   document.body.appendChild(e);
 }
 
 /* Gold dust */
-for (let i = 0; i < 14; i++) {
-  const d = document.createElement("div");
-  d.className = "dust";
-  d.style.left = Math.random() * 100 + "vw";
-  d.style.top = Math.random() * 100 + "vh";
-  d.style.animationDuration = 26 + Math.random() * 24 + "s";
+for(let i=0;i<14;i++){
+  const d=document.createElement("div");
+  d.className="dust";
+  d.style.left=Math.random()*100+"vw";
+  d.style.top=Math.random()*100+"vh";
+  d.style.animationDuration=26+Math.random()*24+"s";
   document.body.appendChild(d);
 }
 
-/* Candle shimmer randomness */
-setInterval(() => {
-  document.documentElement.style.setProperty("--lx", Math.random() * 100 + "%");
-  document.documentElement.style.setProperty("--ly", Math.random() * 100 + "%");
-}, 1800);
+/* Candle shimmer */
+setInterval(()=>{
+  document.documentElement.style.setProperty("--lx",Math.random()*100+"%");
+  document.documentElement.style.setProperty("--ly",Math.random()*100+"%");
+},1800);
 </script>
 
 </body>

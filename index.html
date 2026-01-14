@@ -51,11 +51,11 @@ html,body{
 
 @keyframes floatRotate{
   from{transform:translateY(var(--startY)) rotate(0deg);}
-  to{transform:translateY(-120px) rotate(360deg);}
+  to{transform:translateY(var(--endY)) rotate(360deg);}
 }
 @keyframes floatStraight{
   from{transform:translateY(var(--startY));}
-  to{transform:translateY(-120px);}
+  to{transform:translateY(var(--endY));}
 }
 .rotate{animation:floatRotate linear infinite;}
 .no-rotate{animation:floatStraight linear infinite;}
@@ -79,7 +79,7 @@ html,body{
 /* ===== Page Wrapper ===== */
 .app{
   position:relative;
-  min-height:100dvh; /* REAL viewport */
+  min-height:100dvh;
   padding:56px 22px 32px;
   z-index:2;
 }
@@ -242,16 +242,23 @@ function startTyping(){
   });
 }
 
-/* Emojis – scattered */
+/* FIXED: Emojis with real vertical dispersion */
 const symbols=["🌸","🦋","🎈","🕯","🎂"];
+const bands=[[5,18],[22,38],[42,58],[62,78],[82,95]];
+
 for(let i=0;i<12;i++){
   const e=document.createElement("div");
   const s=symbols[Math.floor(Math.random()*symbols.length)];
+  const band=bands[i%bands.length];
+  const startY=band[0]+Math.random()*(band[1]-band[0]);
+  const endY=-120-Math.random()*200;
+
   e.className="floating "+((s==="🕯"||s==="🎂")?"no-rotate":"rotate");
   e.textContent=s;
   e.style.cssText=`
     left:${Math.random()*100}vw;
-    --startY:${20+Math.random()*60}vh;
+    --startY:${startY}vh;
+    --endY:${endY}px;
     --size:${16+Math.random()*16}px;
     --opacity:${.35+Math.random()*.35};
     animation-duration:${18+Math.random()*16}s;

@@ -2,122 +2,251 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Butterflies</title>
+<title>Private</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background: #87ceeb;
-  font-family: system-ui, sans-serif;
+:root {
+  --bg1: #fdfbfb;
+  --bg2: #ebedee;
+  --accent1: #c471ed;
+  --accent2: #12c2e9;
+  --accent3: #f64f59;
+  --card: rgba(255,255,255,0.75);
+  --text: #111;
 }
 
-/* Canvas full screen */
-canvas {
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: linear-gradient(120deg, var(--bg1), var(--bg2));
+  overflow: hidden;
+  height: 100vh;
+  color: var(--text);
+}
+
+/* ===== Animated Gradient Background ===== */
+.bg {
   position: fixed;
   inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(196,113,237,0.25), transparent 40%),
+    radial-gradient(circle at 80% 30%, rgba(18,194,233,0.25), transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(246,79,89,0.22), transparent 45%);
+  animation: bgMove 20s ease infinite;
   z-index: 0;
 }
 
-/* Overlay content (optional, later) */
-.overlay {
-  position: fixed;
+@keyframes bgMove {
+  0% { filter: hue-rotate(0deg); }
+  50% { filter: hue-rotate(25deg); }
+  100% { filter: hue-rotate(0deg); }
+}
+
+/* ===== Butterflies ===== */
+.butterfly {
+  position: absolute;
+  font-size: 22px;
+  animation: fly 18s linear infinite;
+  opacity: 0.8;
+}
+
+@keyframes fly {
+  0% {
+    transform: translate(-10vw, 100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% { opacity: 1; }
+  100% {
+    transform: translate(110vw, -20vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* ===== Pages ===== */
+.page {
+  position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 22px;
+  opacity: 0;
   pointer-events: none;
+  transform: translateY(30px);
+  transition: all 0.9s ease;
   z-index: 2;
 }
 
-.overlay h1 {
+.page.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* ===== Card ===== */
+.card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--card);
+  backdrop-filter: blur(20px);
+  border-radius: 26px;
+  padding: 34px 28px;
+  box-shadow:
+    0 60px 120px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+  animation: float 8s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+h1 {
+  font-weight: 600;
+  margin: 0 0 14px;
+  letter-spacing: -0.3px;
+}
+
+p {
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+/* ===== Inputs & Buttons ===== */
+input {
+  width: 100%;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.15);
+  font-size: 16px;
+  margin-top: 16px;
+}
+
+button {
+  width: 100%;
+  margin-top: 22px;
+  padding: 16px;
+  border-radius: 18px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--accent1), var(--accent2), var(--accent3));
   color: white;
-  font-size: 36px;
-  text-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+/* ===== Typewriter ===== */
+.cursor {
+  display: inline-block;
+  width: 6px;
+  height: 1.2em;
+  background: #111;
+  margin-left: 4px;
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="scene"></canvas>
+<div class="bg"></div>
 
-<div class="overlay">
-  <h1>Butterflies</h1>
+<!-- Butterflies -->
+<div class="butterfly" style="left:5%; animation-delay:0s;">🦋</div>
+<div class="butterfly" style="left:25%; animation-delay:4s;">🦋</div>
+<div class="butterfly" style="left:55%; animation-delay:8s;">🦋</div>
+<div class="butterfly" style="left:75%; animation-delay:12s;">🦋</div>
+
+<!-- PAGE 1 -->
+<div class="page active" id="p1">
+  <div class="card">
+    <h1>Private</h1>
+    <p>This was never meant for the world.</p>
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="unlock()">Enter</button>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page" id="p2">
+  <div class="card">
+    <h1 id="t1"></h1>
+    <p id="t2"></p>
+    <button onclick="nextPage(3)">Continue</button>
+  </div>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page" id="p3">
+  <div class="card">
+    <p>
+      Some things don’t need witnesses.<br><br>
+      Just intention.
+    </p>
+    <p style="opacity:0.7; margin-top:18px;">
+      — always in your corner
+    </p>
+  </div>
 </div>
 
 <script>
-const canvas = document.getElementById("scene");
-const ctx = canvas.getContext("2d");
+const correctPassword = "15jan2010";
 
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener("resize", resize);
-
-/* ===== Butterfly Class ===== */
-class Butterfly {
-  constructor() {
-    this.reset();
-  }
-
-  reset() {
-    this.x = Math.random() * canvas.width;
-    this.y = canvas.height + Math.random() * canvas.height;
-    this.size = 4 + Math.random() * 6;
-    this.speed = 0.5 + Math.random() * 1.5;
-    this.angle = Math.random() * Math.PI * 2;
-    this.swing = Math.random() * 0.05 + 0.02;
-    this.color = `hsl(${Math.random()*40 + 10}, 80%, 60%)`;
-  }
-
-  update() {
-    this.y -= this.speed;
-    this.x += Math.sin(this.angle) * 1.5;
-    this.angle += this.swing;
-
-    if (this.y < -20) this.reset();
-  }
-
-  draw() {
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    ctx.fillStyle = this.color;
-
-    // wings
-    ctx.beginPath();
-    ctx.ellipse(-this.size, 0, this.size, this.size * 0.6, 0, 0, Math.PI * 2);
-    ctx.ellipse(this.size, 0, this.size, this.size * 0.6, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.restore();
+function unlock() {
+  if (document.getElementById("password").value === correctPassword) {
+    nextPage(2);
+    startTyping();
   }
 }
 
-/* ===== Create Swarm ===== */
-const butterflies = [];
-const COUNT = 180; // increase for more chaos
-
-for (let i = 0; i < COUNT; i++) {
-  butterflies.push(new Butterfly());
+function nextPage(n) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById("p" + n).classList.add("active");
 }
 
-/* ===== Animate ===== */
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+function typeText(el, text, speed = 35, cb) {
+  let i = 0;
+  el.innerHTML = "";
+  const c = document.createElement("span");
+  c.className = "cursor";
+  el.appendChild(c);
 
-  butterflies.forEach(b => {
-    b.update();
-    b.draw();
+  const interval = setInterval(() => {
+    if (i < text.length) {
+      c.insertAdjacentText("beforebegin", text[i++]);
+    } else {
+      clearInterval(interval);
+      c.remove();
+      if (cb) cb();
+    }
+  }, speed);
+}
+
+function startTyping() {
+  typeText(document.getElementById("t1"), "Happy Birthday.", 40, () => {
+    typeText(
+      document.getElementById("t2"),
+      "Some people don’t walk into rooms. They transform them.",
+      30
+    );
   });
-
-  requestAnimationFrame(animate);
 }
-animate();
 </script>
 
 </body>

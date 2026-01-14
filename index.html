@@ -48,22 +48,24 @@ body {
   100% { filter: hue-rotate(0deg); }
 }
 
-/* ===== Butterflies ===== */
-.butterfly {
+/* ===== Flowers ===== */
+.flower {
   position: absolute;
-  font-size: 22px;
-  animation: fly 18s linear infinite;
-  opacity: 0.8;
+  font-size: var(--size);
+  opacity: var(--opacity);
+  animation: floatFlower var(--duration) linear infinite;
+  filter: blur(var(--blur));
+  z-index: 1;
 }
 
-@keyframes fly {
+@keyframes floatFlower {
   0% {
-    transform: translate(-10vw, 100vh) rotate(0deg);
+    transform: translate(var(--xStart), 110vh) rotate(0deg);
     opacity: 0;
   }
-  10% { opacity: 1; }
+  15% { opacity: var(--opacity); }
   100% {
-    transform: translate(110vw, -20vh) rotate(360deg);
+    transform: translate(var(--xEnd), -20vh) rotate(360deg);
     opacity: 0;
   }
 }
@@ -167,11 +169,12 @@ button:active {
 
 <div class="bg"></div>
 
-<!-- Butterflies -->
-<div class="butterfly" style="left:5%; animation-delay:0s;">🦋</div>
-<div class="butterfly" style="left:25%; animation-delay:4s;">🦋</div>
-<div class="butterfly" style="left:55%; animation-delay:8s;">🦋</div>
-<div class="butterfly" style="left:75%; animation-delay:12s;">🦋</div>
+<!-- Flowers -->
+<div class="flower" style="--size:20px;--opacity:0.6;--duration:22s;--blur:0px;--xStart:5vw;--xEnd:15vw;">🌸</div>
+<div class="flower" style="--size:26px;--opacity:0.4;--duration:28s;--blur:1px;--xStart:25vw;--xEnd:35vw;">✿</div>
+<div class="flower" style="--size:18px;--opacity:0.7;--duration:20s;--blur:0px;--xStart:55vw;--xEnd:45vw;">❀</div>
+<div class="flower" style="--size:30px;--opacity:0.3;--duration:32s;--blur:1.5px;--xStart:75vw;--xEnd:65vw;">🌸</div>
+<div class="flower" style="--size:16px;--opacity:0.8;--duration:18s;--blur:0px;--xStart:85vw;--xEnd:95vw;">✿</div>
 
 <!-- PAGE 1 -->
 <div class="page active" id="p1">

@@ -31,7 +31,7 @@ body {
   color: var(--text);
 }
 
-/* ===== Background Drift ===== */
+/* ===== Background ===== */
 .bg {
   position: fixed;
   inset: -10%;
@@ -39,7 +39,6 @@ body {
     radial-gradient(circle at 20% 20%, rgba(196,113,237,0.25), transparent 40%),
     radial-gradient(circle at 80% 30%, rgba(18,194,233,0.25), transparent 40%),
     radial-gradient(circle at 50% 80%, rgba(246,79,89,0.22), transparent 45%);
-  transition: transform 0.2s ease;
   z-index: 0;
 }
 
@@ -48,7 +47,6 @@ body {
   position: absolute;
   font-size: var(--size);
   opacity: var(--opacity);
-  filter: blur(var(--blur));
   pointer-events: none;
   z-index: 1;
 }
@@ -63,22 +61,17 @@ body {
   to { transform: translateY(-20vh); }
 }
 
-.rotate {
-  animation: floatRotate linear infinite;
-}
-
-.no-rotate {
-  animation: floatStraight linear infinite;
-}
+.rotate { animation: floatRotate linear infinite; }
+.no-rotate { animation: floatStraight linear infinite; }
 
 /* ===== Gold Dust ===== */
 .dust {
   position: absolute;
   width: 3px;
   height: 3px;
-  background: radial-gradient(circle, rgba(255,215,160,0.9), transparent);
+  background: radial-gradient(circle, rgba(255,215,160,0.8), transparent);
   border-radius: 50%;
-  opacity: 0.6;
+  opacity: 0.5;
   animation: dustFloat linear infinite;
   pointer-events: none;
   z-index: 1;
@@ -100,15 +93,16 @@ body {
   opacity: 0;
   pointer-events: none;
   transform: translateY(30px);
-  transition: all 0.9s ease;
+  transition: all 0.6s ease;
   z-index: 3;
-  overflow-y: auto;
 }
 
 .page.active {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
+  position: relative;
+  min-height: 100vh;
 }
 
 /* ===== Card ===== */
@@ -116,14 +110,12 @@ body {
   position: relative;
   width: 100%;
   max-width: 440px;
-  max-height: calc(100vh - 60px);
   background: var(--card);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(16px);
   border-radius: 26px;
   padding: 34px 28px;
-  box-shadow: 0 60px 120px rgba(0,0,0,0.25);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.2);
+  overflow: hidden;
 }
 
 .card img {
@@ -138,14 +130,14 @@ body {
   position: absolute;
   inset: -30%;
   background: radial-gradient(circle at var(--lx) var(--ly),
-    rgba(255,200,140,0.25), transparent 45%);
+    rgba(255,200,140,0.22), transparent 45%);
   animation: flicker 4s infinite alternate;
   pointer-events: none;
 }
 
 @keyframes flicker {
-  from { opacity: 0.4; }
-  to { opacity: 0.75; }
+  from { opacity: 0.35; }
+  to { opacity: 0.55; }
 }
 
 h1 {
@@ -180,15 +172,13 @@ button {
   color: white;
 }
 
-button:active {
-  transform: scale(0.96);
-}
+button:active { transform: scale(0.96); }
 </style>
 </head>
 
 <body>
 
-<div class="bg" id="bg"></div>
+<div class="bg"></div>
 
 <!-- PAGE 1 -->
 <div class="page active" id="p1">
@@ -257,7 +247,7 @@ function nextPage(n) {
 /* Typewriter */
 function typeText(el, text, speed, cb) {
   let i = 0;
-  el.innerHTML = "";
+  el.textContent = "";
   const int = setInterval(() => {
     if (i < text.length) el.textContent += text[i++];
     else { clearInterval(int); cb && cb(); }
@@ -274,47 +264,37 @@ function startTyping() {
   });
 }
 
-/* Floating emojis */
+/* Floating emojis (reduced) */
 const symbols = ["🌸","🦋","🎈","🕯","🎂"];
-for (let i=0;i<40;i++){
-  const e=document.createElement("div");
-  const s=symbols[Math.floor(Math.random()*symbols.length)];
-  e.className="floating "+((s==="🕯"||s==="🎂")?"no-rotate":"rotate");
-  e.textContent=s;
-  e.style.cssText=`
-    left:${Math.random()*100}vw;
-    --size:${14+Math.random()*22}px;
-    --opacity:${0.3+Math.random()*0.5};
-    --blur:${Math.random()*1.5}px;
-    animation-duration:${18+Math.random()*20}s;
+for (let i = 0; i < 14; i++) {
+  const e = document.createElement("div");
+  const s = symbols[Math.floor(Math.random() * symbols.length)];
+  e.className = "floating " + ((s === "🕯" || s === "🎂") ? "no-rotate" : "rotate");
+  e.textContent = s;
+  e.style.cssText = `
+    left:${Math.random() * 100}vw;
+    --size:${14 + Math.random() * 18}px;
+    --opacity:${0.3 + Math.random() * 0.4};
+    animation-duration:${22 + Math.random() * 18}s;
   `;
   document.body.appendChild(e);
 }
 
-/* Gold dust */
-for(let i=0;i<50;i++){
-  const d=document.createElement("div");
-  d.className="dust";
-  d.style.left=Math.random()*100+"vw";
-  d.style.top=100+Math.random()*100+"vh";
-  d.style.animationDuration=20+Math.random()*30+"s";
+/* Gold dust (reduced) */
+for (let i = 0; i < 18; i++) {
+  const d = document.createElement("div");
+  d.className = "dust";
+  d.style.left = Math.random() * 100 + "vw";
+  d.style.top = 100 + Math.random() * 100 + "vh";
+  d.style.animationDuration = 24 + Math.random() * 26 + "s";
   document.body.appendChild(d);
 }
 
-/* Background tilt */
-const bg=document.getElementById("bg");
-window.addEventListener("mousemove",e=>{
-  bg.style.transform=`translate(${(e.clientX-innerWidth/2)*0.01}px,${(e.clientY-innerHeight/2)*0.01}px)`
-});
-window.addEventListener("deviceorientation",e=>{
-  bg.style.transform=`translate(${e.gamma*0.4}px,${e.beta*0.3}px)`
-});
-
 /* Candle shimmer randomness */
-setInterval(()=>{
-  document.documentElement.style.setProperty("--lx",Math.random()*100+"%");
-  document.documentElement.style.setProperty("--ly",Math.random()*100+"%");
-},1200);
+setInterval(() => {
+  document.documentElement.style.setProperty("--lx", Math.random() * 100 + "%");
+  document.documentElement.style.setProperty("--ly", Math.random() * 100 + "%");
+}, 1800);
 </script>
 
 </body>

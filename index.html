@@ -148,14 +148,6 @@ button{
   color:white;
 }
 button:active{transform:scale(.96);}
-
-/* Hold hint */
-.holdHint{
-  margin-top:18px;
-  font-size:14px;
-  opacity:.55;
-  text-align:center;
-}
 </style>
 </head>
 
@@ -196,15 +188,14 @@ button:active{transform:scale(.96);}
 
 <!-- PAGE 4 -->
 <div class="page" id="p4">
-  <div class="card" id="finalCard">
+  <div class="card">
     <h1>Approved by a group of highly qualified cats 🐱</h1>
     <p>
       They may be strangers from the internet,<br>
       but they agree on one thing —<br><br>
       you deserve a very happy birthday.
     </p>
-    <img src="cat3.jpg" id="img3">
-    <div class="holdHint">Hold anywhere to finish</div>
+    <img src="cat3.jpg" id="img3" class="show">
   </div>
 </div>
 
@@ -213,7 +204,7 @@ button:active{transform:scale(.96);}
 <script>
 const correctPassword="15jan2010";
 
-/* ===== Navigation ===== */
+/* Navigation */
 function unlock(){
   if(password.value===correctPassword){
     setTheme(2);
@@ -229,7 +220,7 @@ function nextPage(n){
   if(n===4) endStillness();
 }
 
-/* ===== Typewriter ===== */
+/* Typewriter */
 function typeText(el,text,speed,cb){
   let i=0;el.textContent="";
   const int=setInterval(()=>{
@@ -261,23 +252,16 @@ function startPage3(){
   },700);
 }
 
-/* ===== Color Temperature ===== */
+/* Color temperature */
 function setTheme(p){
-  if(p===2){
-    document.documentElement.style.setProperty("--accent1","#f093fb");
-  }
-  if(p===3){
-    document.documentElement.style.setProperty("--accent1","#c471ed");
-  }
-  if(p===4){
-    document.documentElement.style.setProperty("--accent1","#f6c177");
-  }
+  if(p===2) document.documentElement.style.setProperty("--accent1","#f093fb");
+  if(p===3) document.documentElement.style.setProperty("--accent1","#c471ed");
+  if(p===4) document.documentElement.style.setProperty("--accent1","#f6c177");
 }
 
-/* ===== Emojis ===== */
+/* Emojis */
 const symbols=["🌸","🦋","🎈","🕯","🎂"];
 const bands=[[5,18],[22,38],[42,58],[62,78],[82,95]];
-
 for(let i=0;i<12;i++){
   const e=document.createElement("div");
   const s=symbols[Math.floor(Math.random()*symbols.length)];
@@ -312,14 +296,6 @@ function endStillness(){
     el.style.opacity="0";
   });
 }
-
-/* Hold to finish */
-let holdTimer;
-finalCard?.addEventListener("pointerdown",()=>{
-  holdTimer=setTimeout(()=>alert("That’s all."),1500);
-});
-finalCard?.addEventListener("pointerup",()=>clearTimeout(holdTimer));
-finalCard?.addEventListener("pointerleave",()=>clearTimeout(holdTimer));
 
 /* Candle shimmer */
 setInterval(()=>{

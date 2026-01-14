@@ -16,10 +16,7 @@
   --text: #111;
 }
 
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -30,44 +27,55 @@ body {
   color: var(--text);
 }
 
-/* ===== Animated Gradient Background ===== */
+/* ===== Background Drift Layer ===== */
 .bg {
   position: fixed;
-  inset: 0;
+  inset: -5%;
   background:
     radial-gradient(circle at 20% 20%, rgba(196,113,237,0.25), transparent 40%),
     radial-gradient(circle at 80% 30%, rgba(18,194,233,0.25), transparent 40%),
     radial-gradient(circle at 50% 80%, rgba(246,79,89,0.22), transparent 45%);
-  animation: bgMove 20s ease infinite;
+  transition: transform 0.2s ease;
   z-index: 0;
 }
 
-@keyframes bgMove {
-  0% { filter: hue-rotate(0deg); }
-  50% { filter: hue-rotate(25deg); }
-  100% { filter: hue-rotate(0deg); }
-}
-
-/* ===== Flowers ===== */
-.flower {
+/* ===== Floating Elements ===== */
+.floating {
   position: absolute;
   font-size: var(--size);
   opacity: var(--opacity);
-  animation: floatFlower var(--duration) linear infinite;
   filter: blur(var(--blur));
+  animation: floatUp var(--duration) linear infinite;
   z-index: 1;
 }
 
-@keyframes floatFlower {
+@keyframes floatUp {
   0% {
-    transform: translate(var(--xStart), 110vh) rotate(0deg);
+    transform: translate(var(--x), 110vh) rotate(0deg);
     opacity: 0;
   }
   15% { opacity: var(--opacity); }
   100% {
-    transform: translate(var(--xEnd), -20vh) rotate(360deg);
+    transform: translate(calc(var(--x) + var(--drift)), -20vh) rotate(360deg);
     opacity: 0;
   }
+}
+
+/* ===== Gold Dust ===== */
+.dust {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: radial-gradient(circle, rgba(255,215,160,0.8), transparent);
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: dustFloat linear infinite;
+  z-index: 1;
+}
+
+@keyframes dustFloat {
+  from { transform: translateY(0); }
+  to { transform: translateY(-120vh); }
 }
 
 /* ===== Pages ===== */
@@ -82,7 +90,7 @@ body {
   pointer-events: none;
   transform: translateY(30px);
   transition: all 0.9s ease;
-  z-index: 2;
+  z-index: 3;
 }
 
 .page.active {
@@ -93,63 +101,52 @@ body {
 
 /* ===== Card ===== */
 .card {
+  position: relative;
   width: 100%;
   max-width: 440px;
   background: var(--card);
   backdrop-filter: blur(20px);
   border-radius: 26px;
   padding: 34px 28px;
-  box-shadow:
-    0 60px 120px rgba(0,0,0,0.25),
-    inset 0 1px 0 rgba(255,255,255,0.6);
-  animation: float 8s ease-in-out infinite;
+  box-shadow: 0 60px 120px rgba(0,0,0,0.25);
+  overflow: hidden;
 }
 
-@keyframes float {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+/* Candle shimmer */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(circle at var(--lx) var(--ly),
+    rgba(255,200,140,0.25), transparent 45%);
+  animation: flicker 4s infinite alternate;
+  pointer-events: none;
 }
 
-h1 {
-  font-weight: 600;
-  margin: 0 0 14px;
-  letter-spacing: -0.3px;
+@keyframes flicker {
+  from { opacity: 0.4; }
+  to { opacity: 0.7; }
 }
 
-p {
-  font-size: 16px;
-  line-height: 1.8;
-  margin-bottom: 16px;
-}
+h1 { margin: 0 0 14px; }
+p { line-height: 1.8; }
 
-/* ===== Inputs & Buttons ===== */
-input {
+input, button {
   width: 100%;
   padding: 16px;
+  margin-top: 18px;
   border-radius: 16px;
-  border: 1px solid rgba(0,0,0,0.15);
   font-size: 16px;
-  margin-top: 16px;
 }
 
 button {
-  width: 100%;
-  margin-top: 22px;
-  padding: 16px;
-  border-radius: 18px;
   border: none;
-  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  background: linear-gradient(135deg, var(--accent1), var(--accent2), var(--accent3));
   color: white;
+  background: linear-gradient(135deg, var(--accent1), var(--accent2), var(--accent3));
 }
 
-button:active {
-  transform: scale(0.96);
-}
-
-/* ===== Typewriter ===== */
 .cursor {
   display: inline-block;
   width: 6px;
@@ -158,25 +155,15 @@ button:active {
   margin-left: 4px;
   animation: blink 1s steps(1) infinite;
 }
-
-@keyframes blink {
-  50% { opacity: 0; }
-}
+@keyframes blink { 50% { opacity: 0; } }
 </style>
 </head>
 
 <body>
 
-<div class="bg"></div>
+<div class="bg" id="bg"></div>
 
-<!-- Flowers -->
-<div class="flower" style="--size:20px;--opacity:0.6;--duration:22s;--blur:0px;--xStart:5vw;--xEnd:15vw;">🌸</div>
-<div class="flower" style="--size:26px;--opacity:0.4;--duration:28s;--blur:1px;--xStart:25vw;--xEnd:35vw;">✿</div>
-<div class="flower" style="--size:18px;--opacity:0.7;--duration:20s;--blur:0px;--xStart:55vw;--xEnd:45vw;">❀</div>
-<div class="flower" style="--size:30px;--opacity:0.3;--duration:32s;--blur:1.5px;--xStart:75vw;--xEnd:65vw;">🌸</div>
-<div class="flower" style="--size:16px;--opacity:0.8;--duration:18s;--blur:0px;--xStart:85vw;--xEnd:95vw;">✿</div>
-
-<!-- PAGE 1 -->
+<!-- Pages -->
 <div class="page active" id="p1">
   <div class="card">
     <h1>Private</h1>
@@ -186,7 +173,6 @@ button:active {
   </div>
 </div>
 
-<!-- PAGE 2 -->
 <div class="page" id="p2">
   <div class="card">
     <h1 id="t1"></h1>
@@ -195,61 +181,87 @@ button:active {
   </div>
 </div>
 
-<!-- PAGE 3 -->
 <div class="page" id="p3">
   <div class="card">
-    <p>
-      Some things don’t need witnesses.<br><br>
-      Just intention.
-    </p>
-    <p style="opacity:0.7; margin-top:18px;">
-      — always in your corner
-    </p>
+    <p>Some things don’t need witnesses.<br><br>Just intention.</p>
+    <p style="opacity:.7">— always in your corner</p>
   </div>
 </div>
 
 <script>
+/* ===== PASSWORD & PAGES ===== */
 const correctPassword = "15jan2010";
 
 function unlock() {
-  if (document.getElementById("password").value === correctPassword) {
+  if (password.value === correctPassword) {
     nextPage(2);
     startTyping();
   }
 }
-
 function nextPage(n) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.getElementById("p" + n).classList.add("active");
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById("p"+n).classList.add("active");
 }
 
-function typeText(el, text, speed = 35, cb) {
-  let i = 0;
-  el.innerHTML = "";
-  const c = document.createElement("span");
-  c.className = "cursor";
-  el.appendChild(c);
-
-  const interval = setInterval(() => {
-    if (i < text.length) {
-      c.insertAdjacentText("beforebegin", text[i++]);
-    } else {
-      clearInterval(interval);
-      c.remove();
-      if (cb) cb();
-    }
-  }, speed);
+/* ===== TYPEWRITER ===== */
+function typeText(el, text, speed, cb){
+  let i=0; el.innerHTML="";
+  const c=document.createElement("span"); c.className="cursor"; el.appendChild(c);
+  const int=setInterval(()=>{
+    if(i<text.length) c.before(text[i++]);
+    else { clearInterval(int); c.remove(); cb&&cb(); }
+  },speed);
 }
-
-function startTyping() {
-  typeText(document.getElementById("t1"), "Happy Birthday.", 40, () => {
-    typeText(
-      document.getElementById("t2"),
-      "Some people don’t walk into rooms. They transform them.",
-      30
-    );
+function startTyping(){
+  typeText(t1,"Happy Birthday.",40,()=>{
+    typeText(t2,"Some people don’t walk into rooms. They transform them.",30);
   });
 }
+
+/* ===== RANDOM FLOWERS / CAKES / CANDLES ===== */
+const symbols = ["🌸","✿","❀","🕯","🎂"];
+for(let i=0;i<28;i++){
+  const el=document.createElement("div");
+  el.className="floating";
+  el.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+  el.style.cssText = `
+    --size:${14+Math.random()*24}px;
+    --opacity:${0.3+Math.random()*0.5};
+    --blur:${Math.random()*1.5}px;
+    --duration:${18+Math.random()*20}s;
+    --x:${Math.random()*100}vw;
+    --drift:${(Math.random()*40-20)}vw;
+  `;
+  document.body.appendChild(el);
+}
+
+/* ===== GOLD DUST ===== */
+for(let i=0;i<40;i++){
+  const d=document.createElement("div");
+  d.className="dust";
+  d.style.left=Math.random()*100+"vw";
+  d.style.top=100+Math.random()*100+"vh";
+  d.style.animationDuration=20+Math.random()*30+"s";
+  document.body.appendChild(d);
+}
+
+/* ===== PHONE TILT / MOUSE DRIFT ===== */
+const bg=document.getElementById("bg");
+function moveBG(x,y){
+  bg.style.transform=`translate(${x}px,${y}px)`;
+}
+window.addEventListener("deviceorientation",e=>{
+  moveBG(e.gamma*0.5,e.beta*0.3);
+});
+window.addEventListener("mousemove",e=>{
+  moveBG((e.clientX-innerWidth/2)*0.01,(e.clientY-innerHeight/2)*0.01);
+});
+
+/* ===== CANDLE LIGHT RANDOM ===== */
+setInterval(()=>{
+  document.documentElement.style.setProperty("--lx",Math.random()*100+"%");
+  document.documentElement.style.setProperty("--ly",Math.random()*100+"%");
+},1200);
 </script>
 
 </body>

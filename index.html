@@ -12,14 +12,11 @@
   --accent1: #c471ed;
   --accent2: #12c2e9;
   --accent3: #f64f59;
-  --card: rgba(255,255,255,0.75);
+  --card: rgba(255,255,255,0.78);
   --text: #111;
 }
 
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -30,7 +27,7 @@ body {
   color: var(--text);
 }
 
-/* ===== Background Drift ===== */
+/* ===== Background ===== */
 .bg {
   position: fixed;
   inset: -5%;
@@ -40,64 +37,6 @@ body {
     radial-gradient(circle at 50% 80%, rgba(246,79,89,0.22), transparent 45%);
   transition: transform 0.2s ease;
   z-index: 0;
-}
-
-/* ===== Floating Elements ===== */
-.floating {
-  position: absolute;
-  font-size: var(--size);
-  opacity: var(--opacity);
-  filter: blur(var(--blur));
-  z-index: 1;
-}
-
-@keyframes floatUpRotate {
-  0% {
-    transform: translate(var(--x), 110vh) rotate(0deg);
-    opacity: 0;
-  }
-  15% { opacity: var(--opacity); }
-  100% {
-    transform: translate(calc(var(--x) + var(--drift)), -20vh) rotate(360deg);
-    opacity: 0;
-  }
-}
-
-@keyframes floatUpNoRotate {
-  0% {
-    transform: translate(var(--x), 110vh);
-    opacity: 0;
-  }
-  15% { opacity: var(--opacity); }
-  100% {
-    transform: translate(calc(var(--x) + var(--drift)), -20vh);
-    opacity: 0;
-  }
-}
-
-.floating.rotate {
-  animation: floatUpRotate var(--duration) linear infinite;
-}
-
-.floating.no-rotate {
-  animation: floatUpNoRotate var(--duration) linear infinite;
-}
-
-/* ===== Gold Dust ===== */
-.dust {
-  position: absolute;
-  width: 3px;
-  height: 3px;
-  background: radial-gradient(circle, rgba(255,215,160,0.8), transparent);
-  border-radius: 50%;
-  opacity: 0.6;
-  animation: dustFloat linear infinite;
-  z-index: 1;
-}
-
-@keyframes dustFloat {
-  from { transform: translateY(0); }
-  to { transform: translateY(-120vh); }
 }
 
 /* ===== Pages ===== */
@@ -125,16 +64,23 @@ body {
 .card {
   position: relative;
   width: 100%;
-  max-width: 440px;
+  max-width: 460px;
   background: var(--card);
   backdrop-filter: blur(20px);
   border-radius: 26px;
   padding: 34px 28px;
   box-shadow: 0 60px 120px rgba(0,0,0,0.25);
-  overflow: hidden;
+  text-align: center;
 }
 
-/* Candle-light shimmer */
+.card img {
+  width: 100%;
+  border-radius: 18px;
+  margin: 20px 0;
+  object-fit: cover;
+}
+
+/* Candle shimmer */
 .card::after {
   content: "";
   position: absolute;
@@ -151,15 +97,16 @@ body {
 }
 
 h1 {
-  margin: 0 0 14px;
-  font-weight: 600;
+  margin: 0 0 12px;
+  font-size: 28px;
 }
 
 p {
   font-size: 16px;
-  line-height: 1.8;
+  line-height: 1.7;
 }
 
+/* ===== Inputs & Buttons ===== */
 input {
   width: 100%;
   padding: 16px;
@@ -185,20 +132,6 @@ button {
 button:active {
   transform: scale(0.96);
 }
-
-/* ===== Typewriter ===== */
-.cursor {
-  display: inline-block;
-  width: 6px;
-  height: 1.2em;
-  background: #111;
-  margin-left: 4px;
-  animation: blink 1s steps(1) infinite;
-}
-
-@keyframes blink {
-  50% { opacity: 0; }
-}
 </style>
 </head>
 
@@ -206,46 +139,60 @@ button:active {
 
 <div class="bg" id="bg"></div>
 
-<!-- PAGE 1 -->
+<!-- PAGE 1: PASSWORD -->
 <div class="page active" id="p1">
   <div class="card">
     <h1>Private</h1>
-    <p>This was never meant for the world.</p>
+    <p>This page is only for you.</p>
     <input type="password" id="password" placeholder="Password">
     <button onclick="unlock()">Enter</button>
   </div>
 </div>
 
-<!-- PAGE 2 -->
+<!-- PAGE 2: BIG BIRTHDAY WISH -->
 <div class="page" id="p2">
   <div class="card">
-    <h1 id="t1"></h1>
-    <p id="t2"></p>
+    <h1>Happy Birthday 🎉</h1>
+    <p>
+      Wishing you a very happy birthday!  
+      May your day be filled with smiles, warmth, and everything that makes you happy.
+    </p>
+    <img src="images/cat1.jpg" alt="Birthday Cat">
     <button onclick="nextPage(3)">Continue</button>
   </div>
 </div>
 
-<!-- PAGE 3 -->
+<!-- PAGE 3: FUTURE WISH -->
 <div class="page" id="p3">
   <div class="card">
+    <h1>Wishing You the Best Ahead</h1>
     <p>
-      Some things don’t need witnesses.<br><br>
-      Just intention.
+      May the year ahead bring you good health, peace of mind, success in whatever you choose,
+      and plenty of moments worth smiling about.
     </p>
-    <p style="opacity:0.7; margin-top:18px;">
-      — always in your corner
+    <img src="images/cat2.jpg" alt="Good Wishes Cat">
+    <button onclick="nextPage(4)">Continue</button>
+  </div>
+</div>
+
+<!-- PAGE 4: FRIENDS -->
+<div class="page" id="p4">
+  <div class="card">
+    <h1>From All of Us ❤️</h1>
+    <p>
+      Your friends wish you a wonderful birthday and an amazing year ahead.
+      You’re appreciated more than you know.
     </p>
+    <img src="images/cat3.jpg" alt="Friends Wish Cat">
   </div>
 </div>
 
 <script>
-/* ===== PASSWORD ===== */
 const correctPassword = "15jan2010";
 
 function unlock() {
   if (document.getElementById("password").value === correctPassword) {
     nextPage(2);
-    startTyping();
   }
 }
 
@@ -254,76 +201,8 @@ function nextPage(n) {
   document.getElementById("p" + n).classList.add("active");
 }
 
-/* ===== TYPEWRITER ===== */
-function typeText(el, text, speed, cb) {
-  let i = 0;
-  el.innerHTML = "";
-  const c = document.createElement("span");
-  c.className = "cursor";
-  el.appendChild(c);
-
-  const interval = setInterval(() => {
-    if (i < text.length) {
-      c.before(text[i++]);
-    } else {
-      clearInterval(interval);
-      c.remove();
-      if (cb) cb();
-    }
-  }, speed);
-}
-
-function startTyping() {
-  typeText(document.getElementById("t1"), "Happy Birthday.", 40, () => {
-    typeText(
-      document.getElementById("t2"),
-      "Some people don’t walk into rooms. They transform them.",
-      30
-    );
-  });
-}
-
-/* ===== FLOATING ELEMENTS ===== */
-const symbols = ["🌸", "✿", "❀", "🕯", "🎂"];
-
-for (let i = 0; i < 30; i++) {
-  const el = document.createElement("div");
-  el.className = "floating";
-
-  const symbol = symbols[Math.floor(Math.random() * symbols.length)];
-  el.textContent = symbol;
-
-  if (symbol === "🕯" || symbol === "🎂") {
-    el.classList.add("no-rotate");
-  } else {
-    el.classList.add("rotate");
-  }
-
-  el.style.cssText = `
-    --size:${14 + Math.random() * 24}px;
-    --opacity:${0.3 + Math.random() * 0.5};
-    --blur:${Math.random() * 1.5}px;
-    --duration:${18 + Math.random() * 20}s;
-    --x:${Math.random() * 100}vw;
-    --drift:${(Math.random() * 40 - 20)}vw;
-  `;
-
-  document.body.appendChild(el);
-}
-
-/* ===== GOLD DUST ===== */
-for (let i = 0; i < 40; i++) {
-  const d = document.createElement("div");
-  d.className = "dust";
-  d.style.left = Math.random() * 100 + "vw";
-  d.style.top = 100 + Math.random() * 100 + "vh";
-  d.style.animationDuration = 20 + Math.random() * 30 + "s";
-  document.body.appendChild(d);
-}
-
-/* ===== PHONE TILT / MOUSE ===== */
+/* Background tilt */
 const bg = document.getElementById("bg");
-
 function moveBG(x, y) {
   bg.style.transform = `translate(${x}px, ${y}px)`;
 }
@@ -339,7 +218,7 @@ window.addEventListener("mousemove", e => {
   );
 });
 
-/* ===== CANDLE LIGHT RANDOM ===== */
+/* Candle shimmer random */
 setInterval(() => {
   document.documentElement.style.setProperty("--lx", Math.random() * 100 + "%");
   document.documentElement.style.setProperty("--ly", Math.random() * 100 + "%");

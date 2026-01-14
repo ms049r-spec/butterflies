@@ -7,13 +7,13 @@
 
 <style>
 :root{
-  --bg1:#fdfbfb;
-  --bg2:#ebedee;
-  --accent1:#c471ed;
-  --accent2:#12c2e9;
-  --accent3:#f64f59;
-  --card:rgba(255,255,255,0.75);
-  --text:#111;
+  --bg1:#f7f4ef;   /* warm ivory */
+  --bg2:#ebe6df;   /* soft parchment */
+  --accent1:#d6b98c; /* muted gold */
+  --accent2:#c9b37e; /* champagne */
+  --accent3:#bfa06a; /* antique gold */
+  --card:rgba(255,255,255,0.82);
+  --text:#1a1a1a;
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -22,18 +22,18 @@ html,body{
   margin:0;
   padding:0;
   font-family:"Segoe UI",system-ui,sans-serif;
-  background:linear-gradient(120deg,var(--bg1),var(--bg2));
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
   color:var(--text);
 }
 
 /* ===== Background ===== */
 .bg{
   position:fixed;
-  inset:-15%;
+  inset:-20%;
   background:
-    radial-gradient(circle at 20% 20%,rgba(196,113,237,.25),transparent 40%),
-    radial-gradient(circle at 80% 30%,rgba(18,194,233,.25),transparent 40%),
-    radial-gradient(circle at 50% 80%,rgba(246,79,89,.22),transparent 45%);
+    radial-gradient(circle at 18% 22%, rgba(214,185,140,0.28), transparent 45%),
+    radial-gradient(circle at 82% 30%, rgba(191,160,106,0.22), transparent 48%),
+    radial-gradient(circle at 50% 85%, rgba(201,179,126,0.20), transparent 50%);
   z-index:0;
 }
 
@@ -62,9 +62,9 @@ html,body{
 .dust{
   position:fixed;
   width:3px;height:3px;
-  background:radial-gradient(circle,rgba(255,215,160,.8),transparent);
+  background:radial-gradient(circle,rgba(210,180,120,.9),transparent);
   border-radius:50%;
-  opacity:.45;
+  opacity:.4;
   animation:dustFloat linear infinite;
   pointer-events:none;
   z-index:1;
@@ -91,10 +91,12 @@ html,body{
   width:100%;
   max-width:440px;
   background:var(--card);
-  backdrop-filter:blur(16px);
+  backdrop-filter:blur(18px);
   border-radius:26px;
   padding:34px 28px;
-  box-shadow:0 40px 80px rgba(0,0,0,.2);
+  box-shadow:
+    0 40px 80px rgba(0,0,0,.18),
+    inset 0 1px 0 rgba(255,255,255,.6);
   overflow:hidden;
   position:relative;
 }
@@ -116,13 +118,18 @@ html,body{
 .card::after{
   content:"";
   position:absolute;
-  inset:-25%;
-  background:radial-gradient(circle at var(--lx) var(--ly),
-    rgba(255,200,140,.22),transparent 45%);
+  inset:-30%;
+  background:
+    radial-gradient(circle at var(--lx) var(--ly),
+      rgba(255,225,170,.28),
+      transparent 46%);
   animation:flicker 4s infinite alternate;
   pointer-events:none;
 }
-@keyframes flicker{from{opacity:.35;}to{opacity:.55;}}
+@keyframes flicker{
+  from{opacity:.35;}
+  to{opacity:.6;}
+}
 
 h1{margin:0 0 14px;font-weight:600;}
 p{font-size:16px;line-height:1.8;}
@@ -144,8 +151,13 @@ button{
   border:none;
   font-size:16px;
   font-weight:600;
-  background:linear-gradient(135deg,var(--accent1),var(--accent2),var(--accent3));
-  color:white;
+  background:linear-gradient(
+    135deg,
+    var(--accent1),
+    var(--accent2),
+    var(--accent3)
+  );
+  color:#2b1f0f;
 }
 button:active{transform:scale(.96);}
 </style>
@@ -204,10 +216,8 @@ button:active{transform:scale(.96);}
 <script>
 const correctPassword="15jan2010";
 
-/* Navigation */
 function unlock(){
   if(password.value===correctPassword){
-    setTheme(2);
     nextPage(2);
     startPage2();
   }
@@ -215,12 +225,10 @@ function unlock(){
 function nextPage(n){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById("p"+n).classList.add("active");
-  setTheme(n);
   if(n===3) startPage3();
   if(n===4) endStillness();
 }
 
-/* Typewriter */
 function typeText(el,text,speed,cb){
   let i=0;el.textContent="";
   const int=setInterval(()=>{
@@ -229,9 +237,8 @@ function typeText(el,text,speed,cb){
   },speed);
 }
 
-/* Page 2 pacing */
 function startPage2(){
-  typeText(t1,"Happy Birthdayyy 🎉✨",40,()=>{
+  typeText(t1,"Happy 16th Birthdayyy Rimme 🎉✨",40,()=>{
     typeText(t2,
       "Wishing you a very happy birthday. May your day be filled with warmth, smiles, and good moments, and may the year ahead bring you happiness, success, and peace.",
       28,
@@ -240,7 +247,6 @@ function startPage2(){
   });
 }
 
-/* Page 3 pacing */
 function startPage3(){
   img2.classList.add("show");
   setTimeout(()=>{
@@ -252,16 +258,9 @@ function startPage3(){
   },700);
 }
 
-/* Color temperature */
-function setTheme(p){
-  if(p===2) document.documentElement.style.setProperty("--accent1","#f093fb");
-  if(p===3) document.documentElement.style.setProperty("--accent1","#c471ed");
-  if(p===4) document.documentElement.style.setProperty("--accent1","#f6c177");
-}
-
-/* Emojis */
 const symbols=["🌸","🦋","🎈","🕯","🎂"];
 const bands=[[5,18],[22,38],[42,58],[62,78],[82,95]];
+
 for(let i=0;i<12;i++){
   const e=document.createElement("div");
   const s=symbols[Math.floor(Math.random()*symbols.length)];
@@ -280,7 +279,6 @@ for(let i=0;i<12;i++){
   document.body.appendChild(e);
 }
 
-/* Gold dust */
 for(let i=0;i<14;i++){
   const d=document.createElement("div");
   d.className="dust";
@@ -290,14 +288,12 @@ for(let i=0;i<14;i++){
   document.body.appendChild(d);
 }
 
-/* End stillness */
 function endStillness(){
   document.querySelectorAll(".floating,.dust").forEach(el=>{
     el.style.opacity="0";
   });
 }
 
-/* Candle shimmer */
 setInterval(()=>{
   document.documentElement.style.setProperty("--lx",Math.random()*100+"%");
   document.documentElement.style.setProperty("--ly",Math.random()*100+"%");

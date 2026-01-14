@@ -26,8 +26,6 @@ body {
   font-family: "Segoe UI", system-ui, sans-serif;
   background: linear-gradient(120deg, var(--bg1), var(--bg2));
   overflow-x: hidden;
-  overflow-y: auto;
-  min-height: 100vh;
   color: var(--text);
 }
 
@@ -44,21 +42,21 @@ body {
 
 /* ===== Floating Emojis ===== */
 .floating {
-  position: absolute;
+  position: fixed;
   font-size: var(--size);
   opacity: var(--opacity);
   pointer-events: none;
-  z-index: 1;
+  z-index: 2; /* ABOVE background, BELOW cards */
 }
 
 @keyframes floatRotate {
   from { transform: translateY(var(--startY)) rotate(0deg); }
-  to { transform: translateY(-20vh) rotate(360deg); }
+  to   { transform: translateY(-120px) rotate(360deg); }
 }
 
 @keyframes floatStraight {
   from { transform: translateY(var(--startY)); }
-  to { transform: translateY(-20vh); }
+  to   { transform: translateY(-120px); }
 }
 
 .rotate { animation: floatRotate linear infinite; }
@@ -66,12 +64,12 @@ body {
 
 /* ===== Gold Dust ===== */
 .dust {
-  position: absolute;
+  position: fixed;
   width: 3px;
   height: 3px;
   background: radial-gradient(circle, rgba(255,215,160,0.8), transparent);
   border-radius: 50%;
-  opacity: 0.5;
+  opacity: 0.45;
   animation: dustFloat linear infinite;
   pointer-events: none;
   z-index: 1;
@@ -79,7 +77,7 @@ body {
 
 @keyframes dustFloat {
   from { transform: translateY(0); }
-  to { transform: translateY(-120vh); }
+  to   { transform: translateY(-120vh); }
 }
 
 /* ===== Pages ===== */
@@ -92,8 +90,8 @@ body {
   padding: 22px;
   opacity: 0;
   pointer-events: none;
-  transform: translateY(30px);
-  transition: all 0.6s ease;
+  transform: translateY(20px);
+  transition: all 0.5s ease;
   z-index: 3;
 }
 
@@ -101,8 +99,6 @@ body {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
-  position: relative;
-  min-height: 10vh;
 }
 
 /* ===== Card ===== */
@@ -116,6 +112,7 @@ body {
   padding: 34px 28px;
   box-shadow: 0 40px 80px rgba(0,0,0,0.2);
   overflow: hidden;
+  z-index: 3;
 }
 
 .card img {
@@ -128,7 +125,7 @@ body {
 .card::after {
   content: "";
   position: absolute;
-  inset: -30%;
+  inset: -25%;
   background: radial-gradient(circle at var(--lx) var(--ly),
     rgba(255,200,140,0.22), transparent 45%);
   animation: flicker 4s infinite alternate;
@@ -137,18 +134,11 @@ body {
 
 @keyframes flicker {
   from { opacity: 0.35; }
-  to { opacity: 0.55; }
+  to   { opacity: 0.55; }
 }
 
-h1 {
-  margin: 0 0 14px;
-  font-weight: 600;
-}
-
-p {
-  font-size: 16px;
-  line-height: 1.8;
-}
+h1 { margin: 0 0 14px; font-weight: 600; }
+p  { font-size: 16px; line-height: 1.8; }
 
 input {
   width: 100%;
@@ -231,15 +221,19 @@ button:active { transform: scale(0.96); }
 
 <script>
 const correctPassword = "15jan2010";
+let currentPage = 1;
 
 function unlock() {
   if (password.value === correctPassword) {
-    nextPage(2);
+    goTo(2);
     startTyping();
   }
 }
 
-function nextPage(n) {
+function nextPage(n) { goTo(n); }
+
+function goTo(n) {
+  currentPage = n;
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById("p"+n).classList.add("active");
 }
@@ -264,30 +258,30 @@ function startTyping() {
   });
 }
 
-/* Floating emojis — visible immediately */
+/* Floating emojis — fixed band */
 const symbols = ["🌸","🦋","🎈","🕯","🎂"];
-for (let i = 0; i < 14; i++) {
+for (let i = 0; i < 12; i++) {
   const e = document.createElement("div");
   const s = symbols[Math.floor(Math.random() * symbols.length)];
-  e.className = "floating " + ((s === "🕯" || s === "🎂") ? "no-rotate" : "rotate");
+  e.className = "floating " + ((s==="🕯"||s==="🎂")?"no-rotate":"rotate");
   e.textContent = s;
   e.style.cssText = `
-    left:${Math.random() * 100}vw;
-    --startY:${Math.random() * 100}vh;
-    --size:${14 + Math.random() * 18}px;
-    --opacity:${0.3 + Math.random() * 0.4};
-    animation-duration:${16 + Math.random() * 14}s;
+    left:${10 + Math.random() * 80}vw;
+    --startY:${30 + Math.random() * 40}vh;
+    --size:${16 + Math.random() * 16}px;
+    --opacity:${0.35 + Math.random() * 0.35};
+    animation-duration:${18 + Math.random() * 16}s;
   `;
   document.body.appendChild(e);
 }
 
 /* Gold dust */
-for (let i = 0; i < 18; i++) {
+for (let i = 0; i < 14; i++) {
   const d = document.createElement("div");
   d.className = "dust";
   d.style.left = Math.random() * 100 + "vw";
   d.style.top = Math.random() * 100 + "vh";
-  d.style.animationDuration = 24 + Math.random() * 26 + "s";
+  d.style.animationDuration = 26 + Math.random() * 24 + "s";
   document.body.appendChild(d);
 }
 
@@ -300,4 +294,3 @@ setInterval(() => {
 
 </body>
 </html>
-

@@ -52,12 +52,12 @@ body {
 }
 
 @keyframes floatRotate {
-  from { transform: translateY(110vh) rotate(0deg); }
+  from { transform: translateY(var(--startY)) rotate(0deg); }
   to { transform: translateY(-20vh) rotate(360deg); }
 }
 
 @keyframes floatStraight {
-  from { transform: translateY(110vh); }
+  from { transform: translateY(var(--startY)); }
   to { transform: translateY(-20vh); }
 }
 
@@ -264,7 +264,7 @@ function startTyping() {
   });
 }
 
-/* Floating emojis (reduced) */
+/* Floating emojis — visible immediately */
 const symbols = ["🌸","🦋","🎈","🕯","🎂"];
 for (let i = 0; i < 14; i++) {
   const e = document.createElement("div");
@@ -273,19 +273,20 @@ for (let i = 0; i < 14; i++) {
   e.textContent = s;
   e.style.cssText = `
     left:${Math.random() * 100}vw;
+    --startY:${Math.random() * 100}vh;
     --size:${14 + Math.random() * 18}px;
     --opacity:${0.3 + Math.random() * 0.4};
-    animation-duration:${22 + Math.random() * 18}s;
+    animation-duration:${16 + Math.random() * 14}s;
   `;
   document.body.appendChild(e);
 }
 
-/* Gold dust (reduced) */
+/* Gold dust */
 for (let i = 0; i < 18; i++) {
   const d = document.createElement("div");
   d.className = "dust";
   d.style.left = Math.random() * 100 + "vw";
-  d.style.top = 100 + Math.random() * 100 + "vh";
+  d.style.top = Math.random() * 100 + "vh";
   d.style.animationDuration = 24 + Math.random() * 26 + "s";
   document.body.appendChild(d);
 }

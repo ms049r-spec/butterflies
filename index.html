@@ -25,15 +25,16 @@ body {
   margin: 0;
   font-family: "Segoe UI", system-ui, sans-serif;
   background: linear-gradient(120deg, var(--bg1), var(--bg2));
-  overflow: hidden;
-  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 100vh;
   color: var(--text);
 }
 
 /* ===== Background Drift ===== */
 .bg {
   position: fixed;
-  inset: -5%;
+  inset: -10%;
   background:
     radial-gradient(circle at 20% 20%, rgba(196,113,237,0.25), transparent 40%),
     radial-gradient(circle at 80% 30%, rgba(18,194,233,0.25), transparent 40%),
@@ -42,45 +43,32 @@ body {
   z-index: 0;
 }
 
-/* ===== Floating Elements ===== */
+/* ===== Floating Emojis ===== */
 .floating {
   position: absolute;
   font-size: var(--size);
   opacity: var(--opacity);
   filter: blur(var(--blur));
+  pointer-events: none;
   z-index: 1;
 }
 
-@keyframes floatUpRotate {
-  0% {
-    transform: translate(var(--x), 110vh) rotate(0deg);
-    opacity: 0;
-  }
-  15% { opacity: var(--opacity); }
-  100% {
-    transform: translate(calc(var(--x) + var(--drift)), -20vh) rotate(360deg);
-    opacity: 0;
-  }
+@keyframes floatRotate {
+  from { transform: translateY(110vh) rotate(0deg); }
+  to { transform: translateY(-20vh) rotate(360deg); }
 }
 
-@keyframes floatUpNoRotate {
-  0% {
-    transform: translate(var(--x), 110vh);
-    opacity: 0;
-  }
-  15% { opacity: var(--opacity); }
-  100% {
-    transform: translate(calc(var(--x) + var(--drift)), -20vh);
-    opacity: 0;
-  }
+@keyframes floatStraight {
+  from { transform: translateY(110vh); }
+  to { transform: translateY(-20vh); }
 }
 
-.floating.rotate {
-  animation: floatUpRotate var(--duration) linear infinite;
+.rotate {
+  animation: floatRotate linear infinite;
 }
 
-.floating.no-rotate {
-  animation: floatUpNoRotate var(--duration) linear infinite;
+.no-rotate {
+  animation: floatStraight linear infinite;
 }
 
 /* ===== Gold Dust ===== */
@@ -88,10 +76,11 @@ body {
   position: absolute;
   width: 3px;
   height: 3px;
-  background: radial-gradient(circle, rgba(255,215,160,0.8), transparent);
+  background: radial-gradient(circle, rgba(255,215,160,0.9), transparent);
   border-radius: 50%;
   opacity: 0.6;
   animation: dustFloat linear infinite;
+  pointer-events: none;
   z-index: 1;
 }
 
@@ -113,6 +102,7 @@ body {
   transform: translateY(30px);
   transition: all 0.9s ease;
   z-index: 3;
+  overflow-y: auto;
 }
 
 .page.active {
@@ -126,26 +116,27 @@ body {
   position: relative;
   width: 100%;
   max-width: 440px;
+  max-height: calc(100vh - 60px);
   background: var(--card);
   backdrop-filter: blur(20px);
   border-radius: 26px;
   padding: 34px 28px;
   box-shadow: 0 60px 120px rgba(0,0,0,0.25);
-  overflow: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .card img {
   width: 100%;
   border-radius: 18px;
   margin: 20px 0;
-  object-fit: cover;
 }
 
-/* Candle-light shimmer */
+/* Candle shimmer */
 .card::after {
   content: "";
   position: absolute;
-  inset: -20%;
+  inset: -30%;
   background: radial-gradient(circle at var(--lx) var(--ly),
     rgba(255,200,140,0.25), transparent 45%);
   animation: flicker 4s infinite alternate;
@@ -154,7 +145,7 @@ body {
 
 @keyframes flicker {
   from { opacity: 0.4; }
-  to { opacity: 0.7; }
+  to { opacity: 0.75; }
 }
 
 h1 {
@@ -214,7 +205,7 @@ button:active {
   <div class="card">
     <h1 id="t1"></h1>
     <p id="t2"></p>
-    <img src="cat1.jpg" alt="Birthday cat">
+    <img src="cat1.jpg">
     <button onclick="nextPage(3)">Continue</button>
   </div>
 </div>
@@ -228,10 +219,8 @@ button:active {
       reasons to smile along the way.<br><br>
       Hope this year brings you growth, confidence, and moments you’ll be proud of.
     </p>
-    <img src="cat2.jpg" alt="Good wishes cat">
-    <p style="opacity:0.7; margin-top:18px;">
-      — always in your corner
-    </p>
+    <img src="cat2.jpg">
+    <p style="opacity:0.7;margin-top:18px;">— always in your corner</p>
     <button onclick="nextPage(4)">Continue</button>
   </div>
 </div>
@@ -245,10 +234,8 @@ button:active {
       but they agree on one thing —<br><br>
       you deserve a very happy birthday.
     </p>
-    <img src="cat3.jpg" alt="Cat committee">
-    <p style="opacity:0.6; margin-top:18px;">
-      — 🐾🐾🐾
-    </p>
+    <img src="cat3.jpg">
+    <p style="opacity:0.6;margin-top:18px;">— 🐾🐾🐾</p>
   </div>
 </div>
 
@@ -256,7 +243,7 @@ button:active {
 const correctPassword = "15jan2010";
 
 function unlock() {
-  if (document.getElementById("password").value === correctPassword) {
+  if (password.value === correctPassword) {
     nextPage(2);
     startTyping();
   }
@@ -264,43 +251,70 @@ function unlock() {
 
 function nextPage(n) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.getElementById("p" + n).classList.add("active");
+  document.getElementById("p"+n).classList.add("active");
 }
 
+/* Typewriter */
 function typeText(el, text, speed, cb) {
   let i = 0;
   el.innerHTML = "";
-  const c = document.createElement("span");
-  c.className = "cursor";
-  el.appendChild(c);
-
-  const interval = setInterval(() => {
-    if (i < text.length) {
-      c.before(text[i++]);
-    } else {
-      clearInterval(interval);
-      c.remove();
-      if (cb) cb();
-    }
+  const int = setInterval(() => {
+    if (i < text.length) el.textContent += text[i++];
+    else { clearInterval(int); cb && cb(); }
   }, speed);
 }
 
 function startTyping() {
-  typeText(
-    document.getElementById("t1"),
-    "Happy Birthdayyy 🎉✨",
-    40,
-    () => {
-      typeText(
-        document.getElementById("t2"),
-        "Wishing you a very happy birthday. May your day be filled with warmth, smiles, and good moments, and may the year ahead bring you happiness, success, and peace.",
-        28
-      );
-    }
-  );
+  typeText(t1, "Happy Birthdayyy 🎉✨", 40, () => {
+    typeText(
+      t2,
+      "Wishing you a very happy birthday. May your day be filled with warmth, smiles, and good moments, and may the year ahead bring you happiness, success, and peace.",
+      28
+    );
+  });
 }
 
-/* Floating, dust, tilt, shimmer code unchanged */
+/* Floating emojis */
+const symbols = ["🌸","🦋","🎈","🕯","🎂"];
+for (let i=0;i<40;i++){
+  const e=document.createElement("div");
+  const s=symbols[Math.floor(Math.random()*symbols.length)];
+  e.className="floating "+((s==="🕯"||s==="🎂")?"no-rotate":"rotate");
+  e.textContent=s;
+  e.style.cssText=`
+    left:${Math.random()*100}vw;
+    --size:${14+Math.random()*22}px;
+    --opacity:${0.3+Math.random()*0.5};
+    --blur:${Math.random()*1.5}px;
+    animation-duration:${18+Math.random()*20}s;
+  `;
+  document.body.appendChild(e);
+}
+
+/* Gold dust */
+for(let i=0;i<50;i++){
+  const d=document.createElement("div");
+  d.className="dust";
+  d.style.left=Math.random()*100+"vw";
+  d.style.top=100+Math.random()*100+"vh";
+  d.style.animationDuration=20+Math.random()*30+"s";
+  document.body.appendChild(d);
+}
+
+/* Background tilt */
+const bg=document.getElementById("bg");
+window.addEventListener("mousemove",e=>{
+  bg.style.transform=`translate(${(e.clientX-innerWidth/2)*0.01}px,${(e.clientY-innerHeight/2)*0.01}px)`
+});
+window.addEventListener("deviceorientation",e=>{
+  bg.style.transform=`translate(${e.gamma*0.4}px,${e.beta*0.3}px)`
+});
+
+/* Candle shimmer randomness */
+setInterval(()=>{
+  document.documentElement.style.setProperty("--lx",Math.random()*100+"%");
+  document.documentElement.style.setProperty("--ly",Math.random()*100+"%");
+},1200);
 </script>
 
 </body>

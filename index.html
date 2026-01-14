@@ -16,10 +16,7 @@
   --text:#111;
 }
 
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 
 html,body{
   margin:0;
@@ -47,6 +44,7 @@ html,body{
   opacity:var(--opacity);
   pointer-events:none;
   z-index:1;
+  transition:opacity 1.2s ease;
 }
 
 @keyframes floatRotate{
@@ -70,13 +68,14 @@ html,body{
   animation:dustFloat linear infinite;
   pointer-events:none;
   z-index:1;
+  transition:opacity 1.2s ease;
 }
 @keyframes dustFloat{
   from{transform:translateY(0);}
   to{transform:translateY(-120vh);}
 }
 
-/* ===== Page Wrapper ===== */
+/* ===== Layout ===== */
 .app{
   position:relative;
   min-height:100dvh;
@@ -84,15 +83,8 @@ html,body{
   z-index:2;
 }
 
-/* ===== Pages ===== */
-.page{
-  display:none;
-  align-items:center;
-  justify-content:center;
-}
-.page.active{
-  display:flex;
-}
+.page{display:none;align-items:center;justify-content:center;}
+.page.active{display:flex;}
 
 /* ===== Card ===== */
 .card{
@@ -104,12 +96,20 @@ html,body{
   padding:34px 28px;
   box-shadow:0 40px 80px rgba(0,0,0,.2);
   overflow:hidden;
+  position:relative;
 }
 
 .card img{
   width:100%;
   border-radius:18px;
   margin:20px 0;
+  opacity:0;
+  transform:translateY(8px);
+  transition:opacity .9s ease,transform .9s ease;
+}
+.card img.show{
+  opacity:1;
+  transform:translateY(0);
 }
 
 /* Candle shimmer */
@@ -122,10 +122,7 @@ html,body{
   animation:flicker 4s infinite alternate;
   pointer-events:none;
 }
-@keyframes flicker{
-  from{opacity:.35;}
-  to{opacity:.55;}
-}
+@keyframes flicker{from{opacity:.35;}to{opacity:.55;}}
 
 h1{margin:0 0 14px;font-weight:600;}
 p{font-size:16px;line-height:1.8;}
@@ -151,6 +148,14 @@ button{
   color:white;
 }
 button:active{transform:scale(.96);}
+
+/* Hold hint */
+.holdHint{
+  margin-top:18px;
+  font-size:14px;
+  opacity:.55;
+  text-align:center;
+}
 </style>
 </head>
 
@@ -166,7 +171,7 @@ button:active{transform:scale(.96);}
     <h1>Private</h1>
     <p>This was never meant for the world.</p>
     <input type="password" id="password" placeholder="Password">
-    <button onclick="unlock()">Enter</button>
+    <button onclick="unlock()">Next</button>
   </div>
 </div>
 
@@ -175,37 +180,31 @@ button:active{transform:scale(.96);}
   <div class="card">
     <h1 id="t1"></h1>
     <p id="t2"></p>
-    <img src="cat1.jpg">
-    <button onclick="nextPage(3)">Continue</button>
+    <img src="cat1.jpg" id="img1">
+    <button onclick="nextPage(3)">Next</button>
   </div>
 </div>
 
 <!-- PAGE 3 -->
 <div class="page" id="p3">
   <div class="card">
-    <p>
-      Wishing you a year filled with good health, peace of mind, and steady happiness.<br><br>
-      May things work out in your favor, may your efforts pay off, and may you always have
-      reasons to smile along the way.<br><br>
-      Hope this year brings you growth, confidence, and moments you’ll be proud of.
-    </p>
-    <img src="cat2.jpg">
-    <p style="opacity:.7;margin-top:18px;">— always in your corner</p>
-    <button onclick="nextPage(4)">Continue</button>
+    <img src="cat2.jpg" id="img2">
+    <p id="t3"></p>
+    <button onclick="nextPage(4)">Next</button>
   </div>
 </div>
 
 <!-- PAGE 4 -->
 <div class="page" id="p4">
-  <div class="card">
+  <div class="card" id="finalCard">
     <h1>Approved by a group of highly qualified cats 🐱</h1>
     <p>
       They may be strangers from the internet,<br>
       but they agree on one thing —<br><br>
       you deserve a very happy birthday.
     </p>
-    <img src="cat3.jpg">
-    <p style="opacity:.6;margin-top:18px;">— 🐾🐾🐾</p>
+    <img src="cat3.jpg" id="img3">
+    <div class="holdHint">Hold anywhere to finish</div>
   </div>
 </div>
 
@@ -214,18 +213,23 @@ button:active{transform:scale(.96);}
 <script>
 const correctPassword="15jan2010";
 
+/* ===== Navigation ===== */
 function unlock(){
   if(password.value===correctPassword){
+    setTheme(2);
     nextPage(2);
-    startTyping();
+    startPage2();
   }
 }
 function nextPage(n){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById("p"+n).classList.add("active");
+  setTheme(n);
+  if(n===3) startPage3();
+  if(n===4) endStillness();
 }
 
-/* Typewriter */
+/* ===== Typewriter ===== */
 function typeText(el,text,speed,cb){
   let i=0;el.textContent="";
   const int=setInterval(()=>{
@@ -233,16 +237,44 @@ function typeText(el,text,speed,cb){
     else{clearInterval(int);cb&&cb();}
   },speed);
 }
-function startTyping(){
+
+/* Page 2 pacing */
+function startPage2(){
   typeText(t1,"Happy Birthdayyy 🎉✨",40,()=>{
     typeText(t2,
       "Wishing you a very happy birthday. May your day be filled with warmth, smiles, and good moments, and may the year ahead bring you happiness, success, and peace.",
-      28
+      28,
+      ()=>setTimeout(()=>img1.classList.add("show"),600)
     );
   });
 }
 
-/* FIXED: Emojis with real vertical dispersion */
+/* Page 3 pacing */
+function startPage3(){
+  img2.classList.add("show");
+  setTimeout(()=>{
+    typeText(
+      t3,
+      "Wishing you a year filled with good health, peace of mind, and steady happiness. May things work out in your favor and may you always find reasons to smile.",
+      28
+    );
+  },700);
+}
+
+/* ===== Color Temperature ===== */
+function setTheme(p){
+  if(p===2){
+    document.documentElement.style.setProperty("--accent1","#f093fb");
+  }
+  if(p===3){
+    document.documentElement.style.setProperty("--accent1","#c471ed");
+  }
+  if(p===4){
+    document.documentElement.style.setProperty("--accent1","#f6c177");
+  }
+}
+
+/* ===== Emojis ===== */
 const symbols=["🌸","🦋","🎈","🕯","🎂"];
 const bands=[[5,18],[22,38],[42,58],[62,78],[82,95]];
 
@@ -250,15 +282,12 @@ for(let i=0;i<12;i++){
   const e=document.createElement("div");
   const s=symbols[Math.floor(Math.random()*symbols.length)];
   const band=bands[i%bands.length];
-  const startY=band[0]+Math.random()*(band[1]-band[0]);
-  const endY=-120-Math.random()*200;
-
   e.className="floating "+((s==="🕯"||s==="🎂")?"no-rotate":"rotate");
   e.textContent=s;
   e.style.cssText=`
     left:${Math.random()*100}vw;
-    --startY:${startY}vh;
-    --endY:${endY}px;
+    --startY:${band[0]+Math.random()*(band[1]-band[0])}vh;
+    --endY:${-120-Math.random()*200}px;
     --size:${16+Math.random()*16}px;
     --opacity:${.35+Math.random()*.35};
     animation-duration:${18+Math.random()*16}s;
@@ -276,6 +305,21 @@ for(let i=0;i<14;i++){
   d.style.animationDuration=26+Math.random()*24+"s";
   document.body.appendChild(d);
 }
+
+/* End stillness */
+function endStillness(){
+  document.querySelectorAll(".floating,.dust").forEach(el=>{
+    el.style.opacity="0";
+  });
+}
+
+/* Hold to finish */
+let holdTimer;
+finalCard?.addEventListener("pointerdown",()=>{
+  holdTimer=setTimeout(()=>alert("That’s all."),1500);
+});
+finalCard?.addEventListener("pointerup",()=>clearTimeout(holdTimer));
+finalCard?.addEventListener("pointerleave",()=>clearTimeout(holdTimer));
 
 /* Candle shimmer */
 setInterval(()=>{

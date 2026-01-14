@@ -46,17 +46,17 @@ body {
   font-size: var(--size);
   opacity: var(--opacity);
   pointer-events: none;
-  z-index: 2; /* ABOVE background, BELOW cards */
+  z-index: 2;
 }
 
 @keyframes floatRotate {
   from { transform: translateY(var(--startY)) rotate(0deg); }
-  to   { transform: translateY(-120px) rotate(360deg); }
+  to   { transform: translateY(-140px) rotate(360deg); }
 }
 
 @keyframes floatStraight {
   from { transform: translateY(var(--startY)); }
-  to   { transform: translateY(-120px); }
+  to   { transform: translateY(-140px); }
 }
 
 .rotate { animation: floatRotate linear infinite; }
@@ -87,7 +87,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 22px;
+  padding: 44px 22px 22px; /* RESTORED TOP SPACE */
   opacity: 0;
   pointer-events: none;
   transform: translateY(20px);
@@ -170,7 +170,7 @@ button:active { transform: scale(0.96); }
 
 <div class="bg"></div>
 
-<!-- PAGE 1 -->
+<!-- PAGES (unchanged content) -->
 <div class="page active" id="p1">
   <div class="card">
     <h1>Private</h1>
@@ -180,7 +180,6 @@ button:active { transform: scale(0.96); }
   </div>
 </div>
 
-<!-- PAGE 2 -->
 <div class="page" id="p2">
   <div class="card">
     <h1 id="t1"></h1>
@@ -190,7 +189,6 @@ button:active { transform: scale(0.96); }
   </div>
 </div>
 
-<!-- PAGE 3 -->
 <div class="page" id="p3">
   <div class="card">
     <p>
@@ -205,7 +203,6 @@ button:active { transform: scale(0.96); }
   </div>
 </div>
 
-<!-- PAGE 4 -->
 <div class="page" id="p4">
   <div class="card">
     <h1>Approved by a group of highly qualified cats 🐱</h1>
@@ -221,19 +218,15 @@ button:active { transform: scale(0.96); }
 
 <script>
 const correctPassword = "15jan2010";
-let currentPage = 1;
 
 function unlock() {
   if (password.value === correctPassword) {
-    goTo(2);
+    nextPage(2);
     startTyping();
   }
 }
 
-function nextPage(n) { goTo(n); }
-
-function goTo(n) {
-  currentPage = n;
+function nextPage(n) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById("p"+n).classList.add("active");
 }
@@ -258,19 +251,25 @@ function startTyping() {
   });
 }
 
-/* Floating emojis — fixed band */
+/* Floating emojis — scattered lanes */
 const symbols = ["🌸","🦋","🎈","🕯","🎂"];
+const lanes = [10, 25, 40, 55, 70, 85]; // vertical distribution
+
 for (let i = 0; i < 12; i++) {
   const e = document.createElement("div");
   const s = symbols[Math.floor(Math.random() * symbols.length)];
+  const lane = lanes[i % lanes.length];
+
   e.className = "floating " + ((s==="🕯"||s==="🎂")?"no-rotate":"rotate");
   e.textContent = s;
+
   e.style.cssText = `
-    left:${10 + Math.random() * 80}vw;
-    --startY:${30 + Math.random() * 40}vh;
+    left:${lane + Math.random() * 6}vw;
+    --startY:${20 + Math.random() * 60}vh;
     --size:${16 + Math.random() * 16}px;
     --opacity:${0.35 + Math.random() * 0.35};
     animation-duration:${18 + Math.random() * 16}s;
+    animation-delay:${Math.random() * 6}s;
   `;
   document.body.appendChild(e);
 }
